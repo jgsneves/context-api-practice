@@ -1,29 +1,31 @@
 import React from 'react';
 import { Task, TaskContext } from './store/tasks';
 
-
-
 export const Main = () => {
     const context = React.useContext(TaskContext);
     let inputValue = "";
-    
+
     function createNewTask() {
         const newTaskObject: Task = {
             id: Math.random(),
             description: inputValue,
             done: false,
         }
-        const newArr = context.taskList;
-        newArr.push(newTaskObject);
+        const newArr = [...context.taskList, newTaskObject];
 
         context.setTaskList(newArr);
-
-        console.log(context);
     }
-    function handleDeleteButtonClick(arr: Task[], taskId: number) {
-        const newArr = arr.filter(item => item.id !== taskId);
+
+    function changeDone(taskId: number) {
+        const taskIndex = context.taskList.findIndex(item => item.id === taskId);
+        //incomplete
+    }
+
+    function handleDeleteButtonClick(taskId: number) {
+        const newArr = context.taskList.filter(item => item.id !== taskId);
         context.setTaskList(newArr);
     }
+
     return (
         <>
             <h1>To do list</h1>
@@ -37,9 +39,9 @@ export const Main = () => {
                 {context.taskList.map(task => (
                     <li key={task.id}>
                         <p>{task.description}</p>
-                        <p>Concluída: {task.done}</p>
-                        <button>Editar</button>
-                        <button onClick={() => handleDeleteButtonClick(context.taskList, task.id)}>Apagar</button>
+                        <p>Concluída: {String(task.done)}</p>
+                        <button onClick={() => changeDone(task.id)}>{task.done ? 'A fazer' : 'Feita'}</button>
+                        <button onClick={() => handleDeleteButtonClick(task.id)}>Apagar</button>
                     </li>
                 ))}
             </ul>
